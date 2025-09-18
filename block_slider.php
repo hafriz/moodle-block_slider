@@ -133,7 +133,7 @@ class block_slider extends block_base {
             $this->content->text .= html_writer::div(get_string('noimages', 'block_slider'), 'alert alert-info');
         }
 
-        if (has_capability('block/slider:manage', $this->context)) {
+        if (block_slider_user_can_manage($this->context)) {
             $instancearray = ['sliderid' => $this->instance->id];
             if (!empty($this->page->course->id)) {
                 $instancearray['course'] = $this->page->course->id;

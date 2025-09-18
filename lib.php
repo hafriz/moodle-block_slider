@@ -176,3 +176,48 @@ function bxslider_get_settings($config, $sliderid) {
     return array($sliderid, $bxpause, $bxeffect, $bxspeed, $bxcaptions, $bxresponsive, $bxpager,
             $bxcontrols, $bxauto, $bxstopautoonclick, $bxusecss);
 }
+
+/**
+ * Determine if the current user can manage the slider in the supplied context.
+ *
+ * Editing teachers (or other roles with the capability) can manage course sliders.
+ * Sliders outside course contexts require site administrators.
+ *
+ * @param context_block $context
+ * @return bool
+ */
+function block_slider_user_can_manage(context_block $context): bool {
+    if ($context->get_course_context(false)) {
+        return has_capability('block/slider:manage', $context);
+    }
+
+    $systemcontext = context_system::instance();
+
+    $parent = $context->get_parent_context();
+    if ($parent && $parent->contextlevel === CONTEXT_USER) {
+        return has_capability('moodle/site:config', $systemcontext);
+    }
+
+    // Blocks placed on the site, dashboard, or other contexts fall back to site admins only.
+    return has_capability('moodle/site:config', $systemcontext);
+}
+
+/**
+ * Require that the current user can manage the slider in the supplied context.
+ *
+ * @param context_block $context
+ */
+function block_slider_require_manage(context_block $context): void {
+    if ($context->get_course_context(false)) {
+        require_capability('block/slider:manage', $context);
+        return;
+    }
+
+    $parent = $context->get_parent_context();
+    if ($parent && $parent->contextlevel === CONTEXT_USER) {
+        require_capability('moodle/site:config', context_system::instance());
+        return;
+    }
+
+    require_capability('moodle/site:config', context_system::instance());
+}

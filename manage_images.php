@@ -63,7 +63,7 @@ require_once('manage_images_form.php');
 /* require_once($CFG->libdir . '/gdlib.php'); todo: consider adding function of thumbnail generation. */
 
 $context = context_block::instance($sliderid);
-require_capability('block/slider:manage', $context);
+block_slider_require_manage($context);
 
 $PAGE->set_context($context);
 

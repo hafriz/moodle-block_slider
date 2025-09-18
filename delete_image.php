@@ -65,7 +65,7 @@ $PAGE->navbar->add(get_string('manage_slides', 'block_slider'), $redirecturl);
 $PAGE->navbar->add(get_string('delete'));
 
 $context = context_block::instance($sliderid);
-require_capability('block/slider:manage', $context);
+block_slider_require_manage($context);
 
 $PAGE->set_context($context);
 $PAGE->set_url($baseurl);
